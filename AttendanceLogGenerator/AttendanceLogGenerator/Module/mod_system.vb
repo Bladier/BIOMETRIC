@@ -9,7 +9,7 @@ Module mod_system
     ''' <param name="mySql">SQL Statement</param>
     ''' <param name="dest">Excel File Destination</param>
     ''' <remarks></remarks>
-    Friend Sub ExtractToExcel(headers As String(), mySql As String, dest As String)
+    Friend Sub ExtractToExcel(ByVal headers As String(), ByVal mySql As String, ByVal dest As String, ByVal branch As String)
         If dest = "" Then Exit Sub
 
         Dim ds As DataSet = LoadSQL(mySql)
@@ -46,7 +46,7 @@ Module mod_system
         For Each dr As DataRow In ds.Tables(0).Rows
             For colCnt As Integer = 0 To headers.Count - 1
                 If colCnt = 0 Then
-                    oSheet.Cells(rowCnt, colCnt + 1).value = BranchCode
+                    oSheet.Cells(rowCnt, colCnt + 1).value = branch
                 Else
                     oSheet.Cells(rowCnt, colCnt + 1).value = dr(colCnt - 1) 'dr(colCnt - 1) move the column by -1
                 End If
