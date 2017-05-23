@@ -31,8 +31,9 @@
 
         With iniFile
             .Load(frmAttendanceLogGenerator.configFile)
-            .AddSection("Extractor").AddKey("Branch").Value = txtBranch.Text
             .AddSection("Extractor").AddKey("Path").Value = txtpath.Text
+            .AddSection("Extractor").AddKey("Branch").Value = txtBranch.Text
+
 
             .Save(frmAttendanceLogGenerator.configFile)
         End With

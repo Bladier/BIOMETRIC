@@ -163,8 +163,8 @@ Public Class frmAttendanceLogGenerator
     Friend Sub LoadConfig()
         With iniFile
             .Load(configFile)
-            mod_system.BranchCode = IIf(IsError(.GetSection("Extractor").GetKey("Branch").Value), "", .GetSection("Extractor").GetKey("Branch").Value)
             mod_system.DbPath = IIf(IsError(.GetSection("Extractor").GetKey("Path").Value), "", .GetSection("Extractor").GetKey("Path").Value)
+            mod_system.BranchCode = IIf(IsError(.GetSection("Extractor").GetKey("Branch").Value), "", .GetSection("Extractor").GetKey("Branch").Value)
             database.dbSource = mod_system.DbPath
 
             If mod_system.BranchCode = "" Or _
