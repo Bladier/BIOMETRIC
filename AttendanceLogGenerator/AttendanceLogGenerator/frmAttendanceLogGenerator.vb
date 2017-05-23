@@ -98,7 +98,7 @@ Public Class frmAttendanceLogGenerator
             tmpClock = dr.Item(3)
             tmpClock = tmpClock.ToShortDateString
 
-            If tmpClock >= dtFrom.Text Or tmpClock = dtTo.Text Then
+            If tmpClock >= dtFrom.Text And tmpClock <= dtTo.Text Then
                 i = i + 1
                 EditRow = tblEmployeeTimeRecord.NewRow()
                 EditRow(0) = i
