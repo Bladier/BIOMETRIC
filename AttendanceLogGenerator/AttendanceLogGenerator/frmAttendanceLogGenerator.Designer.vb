@@ -31,10 +31,10 @@ Partial Class frmAttendanceLogGenerator
         Me.Label2 = New System.Windows.Forms.Label()
         Me.dtTo = New System.Windows.Forms.DateTimePicker()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.txtBranch = New System.Windows.Forms.TextBox()
+        Me.Label3 = New System.Windows.Forms.Label()
         Me.btnGenerate = New System.Windows.Forms.Button()
         Me.SFD = New System.Windows.Forms.SaveFileDialog()
-        Me.Label3 = New System.Windows.Forms.Label()
-        Me.txtBranch = New System.Windows.Forms.TextBox()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.tpbStatus = New System.Windows.Forms.ToolStripProgressBar()
         Me.lblStatus = New System.Windows.Forms.Label()
@@ -62,14 +62,14 @@ Partial Class frmAttendanceLogGenerator
         '
         'txtDBpath
         '
-        Me.txtDBpath.Location = New System.Drawing.Point(87, 17)
+        Me.txtDBpath.Location = New System.Drawing.Point(88, 17)
         Me.txtDBpath.Name = "txtDBpath"
+        Me.txtDBpath.ReadOnly = True
         Me.txtDBpath.Size = New System.Drawing.Size(369, 20)
         Me.txtDBpath.TabIndex = 2
         '
         'OFD
         '
-        Me.OFD.FileName = "OpenFileDialog1"
         Me.OFD.Filter = "Access Datase |*.MDB"
         '
         'Label1
@@ -84,7 +84,7 @@ Partial Class frmAttendanceLogGenerator
         'dtFrom
         '
         Me.dtFrom.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtFrom.Location = New System.Drawing.Point(87, 69)
+        Me.dtFrom.Location = New System.Drawing.Point(89, 69)
         Me.dtFrom.Name = "dtFrom"
         Me.dtFrom.Size = New System.Drawing.Size(115, 20)
         Me.dtFrom.TabIndex = 4
@@ -123,14 +123,12 @@ Partial Class frmAttendanceLogGenerator
         Me.GroupBox1.TabIndex = 7
         Me.GroupBox1.TabStop = False
         '
-        'btnGenerate
+        'txtBranch
         '
-        Me.btnGenerate.Location = New System.Drawing.Point(476, 122)
-        Me.btnGenerate.Name = "btnGenerate"
-        Me.btnGenerate.Size = New System.Drawing.Size(75, 44)
-        Me.btnGenerate.TabIndex = 7
-        Me.btnGenerate.Text = "&Generate"
-        Me.btnGenerate.UseVisualStyleBackColor = True
+        Me.txtBranch.Location = New System.Drawing.Point(89, 45)
+        Me.txtBranch.Name = "txtBranch"
+        Me.txtBranch.Size = New System.Drawing.Size(369, 20)
+        Me.txtBranch.TabIndex = 8
         '
         'Label3
         '
@@ -141,12 +139,18 @@ Partial Class frmAttendanceLogGenerator
         Me.Label3.TabIndex = 7
         Me.Label3.Text = "Branch Code"
         '
-        'txtBranch
+        'btnGenerate
         '
-        Me.txtBranch.Location = New System.Drawing.Point(89, 45)
-        Me.txtBranch.Name = "txtBranch"
-        Me.txtBranch.Size = New System.Drawing.Size(369, 20)
-        Me.txtBranch.TabIndex = 8
+        Me.btnGenerate.Location = New System.Drawing.Point(476, 122)
+        Me.btnGenerate.Name = "btnGenerate"
+        Me.btnGenerate.Size = New System.Drawing.Size(75, 44)
+        Me.btnGenerate.TabIndex = 7
+        Me.btnGenerate.Text = "&Generate"
+        Me.btnGenerate.UseVisualStyleBackColor = True
+        '
+        'SFD
+        '
+        Me.SFD.FileName = "Excel 2007|*.xlsx"
         '
         'StatusStrip1
         '
@@ -154,7 +158,7 @@ Partial Class frmAttendanceLogGenerator
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tpbStatus})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 171)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(563, 22)
+        Me.StatusStrip1.Size = New System.Drawing.Size(570, 22)
         Me.StatusStrip1.TabIndex = 8
         Me.StatusStrip1.Text = "StatusStrip1"
         '
@@ -179,7 +183,7 @@ Partial Class frmAttendanceLogGenerator
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ButtonFace
-        Me.ClientSize = New System.Drawing.Size(563, 193)
+        Me.ClientSize = New System.Drawing.Size(570, 193)
         Me.Controls.Add(Me.lblStatus)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.btnGenerate)
