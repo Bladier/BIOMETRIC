@@ -4,6 +4,7 @@ Imports System.Data.Odbc
 Imports System.IO
 Imports System.IO.Compression
 
+
 Public Class frmAttendanceLogGenerator
     Dim dsEmpRecNew As DataSet
     Dim i As Integer = 0
@@ -14,40 +15,65 @@ Public Class frmAttendanceLogGenerator
     Dim tmpDestination As String = ""
     Const batch As String = "\Extract.bat"
 
-    Private Sub btnBrowse_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnBrowse.Click
-        OFD.ShowDialog()
-        txtDBpath.Text = OFD.FileName
-        database.dbSource = txtDBpath.Text
-    End Sub
+
+    Friend configFile As String = "bladier.ini"
+    Friend iniFile As New IniFile
 
     Private Sub btnGenerate_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnGenerate.Click
+        If txtBranch.Text = "" Then txtBranch.Focus() : Exit Sub
 
-        Dim sd As Date = dtFrom.Text
-        Dim str As String = sd
+        If Not mod_system.DbPath.Contains(".mdb") Then
+            MsgBox("Database not found", MsgBoxStyle.Critical, "Error")
+            Exit Sub
+        End If
+
+        Me.Enabled = False
+        Dim str As String = Now.ToString("MM/dd/yyyy")
         Dim filename As String = str.Replace("/"c, "_"c)
+
+        Dim msg As DialogResult = MsgBox("Do you want to generate selected file?", MsgBoxStyle.YesNo)
+        If msg = vbNo Then Exit Sub
+
         generator()
 
-        'Dim tmp_path1 As String = (Environment.GetFolderPath(Environment.SpecialFolder.Desktop) & "\Attlog" & txtBranch.Text & "" & filename & ".rar")
+        Dim tmp_path1 As String = (Environment.GetFolderPath(Environment.SpecialFolder.Desktop) & "\attlog" & txtBranch.Text & "" & filename & ".rar")
 
-        'If My.Computer.FileSystem.FileExists(tmp_path1) Then
-        '    My.Computer.FileSystem.DeleteFile(tmp_path1)
-        'End If
+        If My.Computer.FileSystem.FileExists(tmp_path1) Then
+            MsgBox("This file is already exists" & vbCrLf & "Please Delete other one!", MsgBoxStyle.Critical, "Error")
+            If My.Computer.FileSystem.FileExists(tmpDestination) Then
+                MsgBox("Please try again!", MsgBoxStyle.Critical, "Error")
+                My.Computer.FileSystem.DeleteFile(tmpDestination)
+            End If : tmpDestination = ""
+            clear()
+            DeleteXLS() : Exit Sub
+        End If
 
-        My.Computer.FileSystem.RenameFile(tmpDestination & "\Attlog" & txtBranch.Text & ".rar", "Attlog" & txtBranch.Text & "" & filename & ".rar")
+        MsgBox("Thank you!", MsgBoxStyle.Information, "Information")
 
+        My.Computer.FileSystem.RenameFile(tmpDestination, "attlog" & txtBranch.Text & "" & filename & ".rar")
+
+        If MsgBox("Command Successful", MsgBoxStyle.OkOnly + MsgBoxStyle.Information, _
+            "Command") = MsgBoxResult.Ok Then tpbStatus.Minimum = 0 : tpbStatus.Value = 0 : lblStatus.Text = "Idle"
+
+        DeleteXLS()
+        Me.Enabled = True
+    End Sub
+
+    Private Sub clear()
+        tpbStatus.Maximum = 0 : tpbStatus.Value = 0 : lblStatus.Text = "Idle"
+    End Sub
+    Private Sub DeleteXLS()
         Dim myFile As String
         Dim mydir As String = Application.StartupPath
         'readValue()
         For Each myFile In Directory.GetFiles(mydir, "*.xlsx")
             File.Delete(myFile)
         Next
-
-        If MsgBox("Command Successful", MsgBoxStyle.OkOnly + MsgBoxStyle.Information, _
-            "Command") = MsgBoxResult.Ok Then tpbStatus.Minimum = 0 : tpbStatus.Value = 0 : lblStatus.Text = "Idle"
+        Me.Enabled = True
     End Sub
 
     Private Sub generator()
-        If txtDBpath.Text = "" Then Exit Sub : If txtBranch.Text = "" Then Exit Sub
+
 
         Dim headers As String() = {"ID", "Employe ID", "Time Log"}
         mysql = "SELECT * FROM RAS_ATTRECORD"
@@ -69,11 +95,11 @@ Public Class frmAttendanceLogGenerator
         Dim EditRow As DataRow
         dsEmpRecNew = New DataSet
         For Each dr As DataRow In ds.Tables(0).Rows
-            i = i + 1
             tmpClock = dr.Item(3)
             tmpClock = tmpClock.ToShortDateString
 
             If tmpClock >= dtFrom.Text Or tmpClock = dtTo.Text Then
+                i = i + 1
                 EditRow = tblEmployeeTimeRecord.NewRow()
                 EditRow(0) = i
                 EditRow(1) = IIf(Not IsDBNull(dr.Item("DIN")), dr.Item("DIN"), "")
@@ -98,12 +124,14 @@ Public Class frmAttendanceLogGenerator
             sw.WriteLine("echo Extracting. . .")
             sw.WriteLine("pause")
             sw.WriteLine("echo PLEASE WAIT WHILE SYSTEM Extracting...")
-            sw.WriteLine("rar a " & tmpDestination & "\" & "Attlog" & txtBranch.Text & ".rar " & SFD.FileName & " -hp" & pswd)
+            sw.WriteLine("rar a " & tmpDestination & "\" & "Attlog" & txtBranch.Text & Now.ToString("MMddyyyy") & ".rar " & SFD.FileName & " -hp" & pswd)
             sw.WriteLine("cls ")
             sw.WriteLine("echo DONE!!! THANK YOU FOR WAITING")
             sw.WriteLine("pause")
             sw.WriteLine("exit")
         End Using
+
+        tmpDestination = tmpDestination & "\" & "Attlog" & txtBranch.Text & Now.ToString("MMddyyyy") & ".rar "
         'CommandPrompt(batch, appPath)
         Dim pro As New ProcessStartInfo(appPath & batch)
         pro.RedirectStandardError = True
@@ -126,5 +154,36 @@ Public Class frmAttendanceLogGenerator
 
     Private Sub frmAttendanceLogGenerator_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         tmpDestination = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
+        LoadConfig()
+    End Sub
+
+
+#Region "Database"
+
+    Friend Sub LoadConfig()
+        With iniFile
+            .Load(configFile)
+            mod_system.BranchCode = IIf(IsError(.GetSection("Extractor").GetKey("Branch").Value), "", .GetSection("Extractor").GetKey("Branch").Value)
+            mod_system.DbPath = IIf(IsError(.GetSection("Extractor").GetKey("Path").Value), "", .GetSection("Extractor").GetKey("Path").Value)
+            database.dbSource = mod_system.DbPath
+
+            If mod_system.BranchCode = "" Or _
+                mod_system.DbPath = "" Or _
+                database.dbSource = "ANOISIM.MDB" Then
+                diagOptions.Show()
+            End If
+
+            If Not mod_system.DbPath.Contains(".mdb") Then
+                MsgBox("File not set", MsgBoxStyle.Critical, "Error")
+                Exit Sub
+            End If
+
+            txtBranch.Text = mod_system.BranchCode
+        End With
+    End Sub
+#End Region
+
+    Private Sub frmAttendanceLogGenerator_DoubleClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.DoubleClick
+        diagOptions.Show()
     End Sub
 End Class

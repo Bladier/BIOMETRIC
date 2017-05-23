@@ -1,6 +1,8 @@
 ﻿Imports Microsoft.Office.Interop
 Module mod_system
     Dim tmpClock As Date
+    Friend BranchCode As String = ""
+    Friend DbPath As String = ""
 
   
     Friend Sub ExtractToExcel(ByVal headers As String(), ByVal ds As DataSet, ByVal dest As String, ByVal branch As String)
