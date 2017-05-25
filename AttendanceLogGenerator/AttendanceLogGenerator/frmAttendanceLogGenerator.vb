@@ -32,7 +32,7 @@ Public Class frmAttendanceLogGenerator
         Dim filename As String = str.Replace("/"c, "_"c)
 
         Dim msg As DialogResult = MsgBox("Do you want to generate selected file?", MsgBoxStyle.YesNo)
-        If msg = vbNo Then Exit Sub
+        If msg = vbNo Then Me.Enabled = True : Exit Sub
 
         generator()
 
@@ -47,6 +47,12 @@ Public Class frmAttendanceLogGenerator
             clear()
             DeleteXLS() : Exit Sub
         End If
+
+        Dim idx As Integer = 100
+
+        For id As Integer = 0 To idx - 1
+            If id = 9 Then Exit For
+        Next
 
         MsgBox("Thank you!", MsgBoxStyle.Information, "Information")
 
