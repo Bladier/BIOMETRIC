@@ -51,12 +51,12 @@ Public Class frmAttendanceLogGenerator
         Dim idx As Integer = 100
 
         For id As Integer = 0 To idx - 1
-            If id = 9 Then Exit For
+            If id = 99 Then Exit For
         Next
 
         MsgBox("Thank you!", MsgBoxStyle.Information, "Information")
 
-        My.Computer.FileSystem.RenameFile(tmpDestination, "attlog" & txtBranch.Text & "" & filename & ".rar")
+        'My.Computer.FileSystem.RenameFile(tmpDestination, "attlog" & txtBranch.Text & "" & filename & ".rar")
 
         If MsgBox("Command Successful", MsgBoxStyle.OkOnly + MsgBoxStyle.Information, _
             "Command") = MsgBoxResult.Ok Then tpbStatus.Minimum = 0 : tpbStatus.Value = 0 : lblStatus.Text = "Idle"
@@ -119,18 +119,23 @@ Public Class frmAttendanceLogGenerator
         SFD.FileName = String.Format("{2}{1}{0}.xlsx", Now.ToString("MMddyyyy"), txtBranch.Text, "Attlog")  'BranchCode + Date
         verified_url = appPath & "\" & SFD.FileName
 
+        Dim truFileName As String = SFD.FileName
         'Extracting
         ExtractToExcel(headers, dsEmpRecNew, verified_url, txtBranch.Text)
 
+        If File.Exists(appPath & "\" & batch) Then
+            My.Computer.FileSystem.DeleteFile(appPath & "\" & batch)
+        End If
+        ' MsgBox("rar a " & mod_system.rarPath & "Attlog" & txtBranch.Text & Now.ToString("MMddyyyy") & ".rar " & truFileName & " -hp" & pswd)
         'Making rar
-        ' tmpDestination = tmpDestination
+        'tmpDestination = tmpDestination.Replace(" ", "")
         Using sw As StreamWriter = File.CreateText("Extract.bat")
             sw.WriteLine("@echo off")
             sw.WriteLine("title ATTLOG - Extract")
             sw.WriteLine("echo Extracting. . .")
             sw.WriteLine("pause")
             sw.WriteLine("echo PLEASE WAIT WHILE SYSTEM Extracting...")
-            sw.WriteLine("rar a " & tmpDestination & "\" & "Attlog" & txtBranch.Text & Now.ToString("MMddyyyy") & ".rar " & SFD.FileName & " -hp" & pswd)
+            sw.WriteLine("rar a " & mod_system.rarPath & "\Attlog" & txtBranch.Text & Now.ToString("MMddyyyy") & ".rar " & truFileName & " -hp" & pswd)
             sw.WriteLine("cls ")
             sw.WriteLine("echo DONE!!! THANK YOU FOR WAITING")
             sw.WriteLine("pause")
@@ -159,8 +164,11 @@ Public Class frmAttendanceLogGenerator
     End Sub
 
     Private Sub frmAttendanceLogGenerator_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        tmpDestination = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
         LoadConfig()
+        tmpDestination = mod_system.rarPath
+        ' tmpDestination = Path.GetPathRoot(Environment.SystemDirectory)
+        'Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
+
     End Sub
 
 
@@ -171,6 +179,7 @@ Public Class frmAttendanceLogGenerator
             .Load(configFile)
             mod_system.DbPath = IIf(IsError(.GetSection("Extractor").GetKey("Path").Value), "", .GetSection("Extractor").GetKey("Path").Value)
             mod_system.BranchCode = IIf(IsError(.GetSection("Extractor").GetKey("Branch").Value), "", .GetSection("Extractor").GetKey("Branch").Value)
+            mod_system.rarPath = IIf(IsError(.GetSection("Extractor").GetKey("Rarpath").Value), "", .GetSection("Extractor").GetKey("Rarpath").Value)
             database.dbSource = mod_system.DbPath
 
             If mod_system.BranchCode = "" Or _

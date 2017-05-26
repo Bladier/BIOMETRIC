@@ -28,6 +28,8 @@ Partial Class diagOptions
         Me.btnSave = New System.Windows.Forms.Button()
         Me.txtpath = New System.Windows.Forms.TextBox()
         Me.Label5 = New System.Windows.Forms.Label()
+        Me.txtRarPath = New System.Windows.Forms.TextBox()
+        Me.Label2 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'Label1
@@ -48,7 +50,7 @@ Partial Class diagOptions
         '
         'btnClose
         '
-        Me.btnClose.Location = New System.Drawing.Point(311, 90)
+        Me.btnClose.Location = New System.Drawing.Point(312, 129)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.Size = New System.Drawing.Size(75, 23)
         Me.btnClose.TabIndex = 6
@@ -57,7 +59,7 @@ Partial Class diagOptions
         '
         'btnSave
         '
-        Me.btnSave.Location = New System.Drawing.Point(230, 90)
+        Me.btnSave.Location = New System.Drawing.Point(231, 129)
         Me.btnSave.Name = "btnSave"
         Me.btnSave.Size = New System.Drawing.Size(75, 23)
         Me.btnSave.TabIndex = 5
@@ -76,15 +78,33 @@ Partial Class diagOptions
         Me.Label5.AutoSize = True
         Me.Label5.Location = New System.Drawing.Point(9, 48)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(57, 13)
+        Me.Label5.Size = New System.Drawing.Size(47, 13)
         Me.Label5.TabIndex = 8
-        Me.Label5.Text = "Save Path"
+        Me.Label5.Text = "DB Path"
+        '
+        'txtRarPath
+        '
+        Me.txtRarPath.Location = New System.Drawing.Point(13, 103)
+        Me.txtRarPath.Name = "txtRarPath"
+        Me.txtRarPath.Size = New System.Drawing.Size(373, 20)
+        Me.txtRarPath.TabIndex = 9
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(10, 87)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(87, 13)
+        Me.Label2.TabIndex = 10
+        Me.Label2.Text = "Rar Path to save"
         '
         'diagOptions
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(399, 126)
+        Me.ClientSize = New System.Drawing.Size(399, 175)
+        Me.Controls.Add(Me.txtRarPath)
+        Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.txtpath)
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.btnSave)
@@ -104,4 +124,6 @@ Partial Class diagOptions
     Friend WithEvents btnSave As System.Windows.Forms.Button
     Friend WithEvents txtpath As System.Windows.Forms.TextBox
     Friend WithEvents Label5 As System.Windows.Forms.Label
+    Friend WithEvents txtRarPath As System.Windows.Forms.TextBox
+    Friend WithEvents Label2 As System.Windows.Forms.Label
 End Class
