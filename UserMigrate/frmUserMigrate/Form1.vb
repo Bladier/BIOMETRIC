@@ -111,12 +111,12 @@ Public Class Form1
         For Each dr As DataRow In ds.Tables(0).Rows
             tblID = dr.Item("USERID")
             privileges = dr.Item("PRIVILEGE")
-            If dr.Item("Username") = "POSadmin" Then Continue For
 
             With s_USER
                 .ID = dr.Item("USERID")
 
                 .USERNAME = dr.Item("Username")
+                If dr.Item("Username") = "POSadmin" Then Continue For
 
                 .FIRSTNAME = dr.Item("Fullname")
 
