@@ -1,0 +1,8 @@
+c:\users\misgwapohon\documents\visual studio 2010\Projects\Dev\Dev\bin\Debug\Dev.exe
+c:\users\misgwapohon\documents\visual studio 2010\Projects\Dev\Dev\bin\Debug\Dev.pdb
+c:\users\misgwapohon\documents\visual studio 2010\Projects\Dev\Dev\bin\Debug\Dev.xml
+c:\users\misgwapohon\documents\visual studio 2010\Projects\Dev\Dev\obj\x86\Debug\Dev.Resources.resources
+c:\users\misgwapohon\documents\visual studio 2010\Projects\Dev\Dev\obj\x86\Debug\Dev.vbproj.GenerateResource.Cache
+c:\users\misgwapohon\documents\visual studio 2010\Projects\Dev\Dev\obj\x86\Debug\Dev.exe
+c:\users\misgwapohon\documents\visual studio 2010\Projects\Dev\Dev\obj\x86\Debug\Dev.xml
+c:\users\misgwapohon\documents\visual studio 2010\Projects\Dev\Dev\obj\x86\Debug\Dev.pdb
