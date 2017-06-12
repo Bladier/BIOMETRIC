@@ -23,6 +23,8 @@ Public Class Form1
     Dim priv_path As String = AppDomain.CurrentDomain.BaseDirectory & "privilege.anoisim" 'Privilege
     Private privCount As Integer = 0
 
+    Dim privilegetype As String() = {"StockOut", "Return"}
+
     Private Sub LoadPath()
         Dim readValue = My.Computer.Registry.GetValue(
     "HKEY_LOCAL_MACHINE\Software\cdt-S0ft\Pawnshop", "InstallPath", Nothing)
@@ -66,8 +68,9 @@ Public Class Form1
         For Each dr As DataRow In ds.Tables(0).Rows
             If dr.Item("PRIVILEGE") = "PDuNxp8S9q0=" Then Continue For
             Dim iCountStr As String = dr.Item("PRIVILEGE")
+            iCountStr = iCountStr.Replace("|", "")
 
-            If iCountStr.Length <> "34" Then
+            If iCountStr.Length <> "31" Then
                 isGrtrThan34 = True : Exit For
             End If
         Next
@@ -111,6 +114,7 @@ Public Class Form1
         For Each dr As DataRow In ds.Tables(0).Rows
             tblID = dr.Item("USERID")
             privileges = dr.Item("PRIVILEGE")
+            privileges = privileges.Replace("|", "")
 
             With s_USER
                 .ID = dr.Item("USERID")
@@ -170,7 +174,7 @@ Public Class Form1
 
                 .add_USER()
 
-                If privileges.Length = "34" Then
+                If privileges.Length = "31" Then
                     For Each Line As String In File.ReadLines(priv_path)
                         If Line = "StockOut" Or Line = "Return" Then Continue For
                         .USERID = dr.Item("USERID")
@@ -179,9 +183,18 @@ Public Class Form1
 
                         .Save_Privilege(dr.Item("USERID"), False)
                     Next
+
+                    For Each privType In privilegetype
+                        .USERID = dr.Item("USERID")
+                        .PRIVILEGE_TYPE = privType
+                        .ACCESSTYPE = "No Access"
+
+                        .Save_Privilege(dr.Item("USERID"), False)
+                    Next
+
                 Else
                     For Each Line As String In File.ReadLines(priv_path)
-                        If Line = "StockOut" Or Line = "Return" Then Continue For
+                        ' If Line = "StockOut" Or Line = "Return" Then Continue For
                         .USERID = dr.Item("USERID")
                         .PRIVILEGE_TYPE = Line
                         .ACCESSTYPE = GetPrivilege()
@@ -189,8 +202,6 @@ Public Class Form1
                         .Save_Privilege(dr.Item("USERID"), False)
                     Next
                 End If
-
-
             End With
 
             PRIVILEGE_FROM_OLD_TABLE = dr.Item("Privilege")
@@ -202,29 +213,37 @@ Public Class Form1
 
         Next
 
-        mysql = "CREATE TRIGGER BI_tbl_user_default_USERID FOR tbl_user_default "
-        mysql &= vbCrLf & "ACTIVE BEFORE INSERT "
-        mysql &= vbCrLf & "POSITION 0 "
-        mysql &= vbCrLf & "AS "
-        mysql &= vbCrLf & "BEGIN "
-        mysql &= vbCrLf & "  IF (NEW.USERID IS NULL) THEN "
-        mysql &= vbCrLf & "      NEW.USERID = GEN_ID(tbl_user_default_USERID_GEN, " & tblID + 1 & "); "
-        mysql &= vbCrLf & "END; "
-        RunCommand(mysql)
+        'mysql = "CREATE TRIGGER BI_tbl_user_default_USERID FOR tbl_user_default "
+        'mysql &= vbCrLf & "ACTIVE BEFORE INSERT "
+        'mysql &= vbCrLf & "POSITION 0 "
+        'mysql &= vbCrLf & "AS "
+        'mysql &= vbCrLf & "BEGIN "
+        'mysql &= vbCrLf & "  IF (NEW.USERID IS NULL) THEN "
+        'mysql &= vbCrLf & "      NEW.USERID = GEN_ID(tbl_user_default_USERID_GEN, " & tblID + 1 & "); "
+        'mysql &= vbCrLf & "END; "
+        Dim GENUSERID As String = "SET GENERATOR " _
+                                   & "tbl_user_default" & "_USERID_GEN TO " _
+                                   & tblID : RunCommand(GENUSERID)
+
 
         mysql = "SELECT USERLINE_ID FROM TBL_USERLINE ORDER BY USERLINE_ID ASC"
         Dim ds1 As DataSet = LoadSQL(mysql, "TBL_USERLINE")
         Dim iCnt As Integer = ds1.Tables(0).Rows.Count
 
-        mysql = "CREATE TRIGGER BI_TBL_USERLINE_USERLINE_ID FOR TBL_USERLINE "
-        mysql &= vbCrLf & "ACTIVE BEFORE INSERT "
-        mysql &= vbCrLf & "POSITION 0 "
-        mysql &= vbCrLf & "AS "
-        mysql &= vbCrLf & "BEGIN "
-        mysql &= vbCrLf & "  IF (NEW.USERLINE_ID IS NULL) THEN "
-        mysql &= vbCrLf & "      NEW.USERLINE_ID = GEN_ID(TBL_USERLINE_USERLINE_ID_GEN, " & tblID + 1 & "); "
-        mysql &= vbCrLf & "END; "
-        RunCommand(mysql)
+        Dim GENUSERLINE As String = "SET GENERATOR " _
+                                 & "TBL_USERLINE" & "_USERLINE_ID_GEN TO " _
+                                 & iCnt : RunCommand(GENUSERLINE)
+
+
+        'mysql = "CREATE TRIGGER BI_TBL_USERLINE_USERLINE_ID FOR TBL_USERLINE "
+        'mysql &= vbCrLf & "ACTIVE BEFORE INSERT "
+        'mysql &= vbCrLf & "POSITION 0 "
+        'mysql &= vbCrLf & "AS "
+        'mysql &= vbCrLf & "BEGIN "
+        'mysql &= vbCrLf & "  IF (NEW.USERLINE_ID IS NULL) THEN "
+        'mysql &= vbCrLf & "      NEW.USERLINE_ID = GEN_ID(TBL_USERLINE_USERLINE_ID_GEN, " & tblID + 1 & "); "
+        'mysql &= vbCrLf & "END; "
+        'RunCommand(mysql)
 
 
         If MsgBox("Successfully Migrated", MsgBoxStyle.OkOnly + MsgBoxStyle.Information, _
