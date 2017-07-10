@@ -51,6 +51,7 @@ Public Class frmJelCal
             Dim JewTmp As New Karat
             Dim tmpClass As New Classes
             With JewTmp
+                Console.WriteLine("Description:" & oSheet.Cells(cnt, 3).value)
                 tmpKarats = .ParseKarat(oSheet.Cells(cnt, 3).value)
                 tmpgrams = .ParseGrams(oSheet.Cells(cnt, 3).value)
                 tmpcls = .ParseClass(oSheet.Cells(cnt, 2).value)

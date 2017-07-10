@@ -123,8 +123,13 @@ Public Class Karat
     Friend Function ParseKarat(ByVal Description As String)
         Dim Karat As String
 
-        Karat = Description.Substring(0, Description.IndexOf("KT"))
-        Karat = Karat.Substring(Karat.Length - 2)
+        If Description.Contains("kt") Then
+            Karat = Description.Substring(0, Description.IndexOf("kt"))
+            Karat = Karat.Substring(Karat.Length - 2)
+        Else
+            Karat = Description.Substring(0, Description.IndexOf("KT")).Trim(" ")
+            Karat = Karat.Substring(Karat.Length - 2)
+        End If
 
         Console.WriteLine(Karat)
         Return Karat
@@ -142,10 +147,30 @@ Public Class Karat
     Friend Function ParseGrams(ByVal Description As String)
         Dim Gram As String
 
-        Gram = Description.Substring(Description.LastIndexOf(" "c)).Trim("G")
+        Dim tmpDesc As String = Description
+        tmpDesc = tmpDesc.Substring(tmpDesc.Length - 1)
+        If tmpDesc = "G" Or tmpDesc = "g" Then
 
-        Console.WriteLine(Gram)
-        Return Gram
+            If Description.Contains("-") Then
+                Gram = Description.Substring(Description.LastIndexOf("-"c)).Trim("-").Trim("G").Trim("g")
+                Return Gram
+            Else
+                Description = Description.Replace(" G", "")
+                Gram = Description.Substring(Description.LastIndexOf(" "c)).Trim("G").Trim("g").Trim(" ")
+                Gram = Gram.Replace("-", " ")
+
+                Return Gram
+            End If
+
+        Else
+            Gram = Description.Substring(0, Description.LastIndexOf("G"))
+
+            Gram = Gram.Substring(Gram.LastIndexOf(" "c)).Trim("G").Trim("g").Trim(" ")
+            Gram = Gram.Replace("-", " ")
+
+        End If
+
+        Return 0.0
     End Function
 
     'Public Sub Save_ItemClass()
