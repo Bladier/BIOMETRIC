@@ -126,9 +126,11 @@ Public Class Karat
         If Description.Contains("kt") Then
             Karat = Description.Substring(0, Description.IndexOf("kt"))
             Karat = Karat.Substring(Karat.Length - 2)
+            Karat = Karat.Replace(" ", "")
         Else
             Karat = Description.Substring(0, Description.IndexOf("KT")).Trim(" ")
             Karat = Karat.Substring(Karat.Length - 2)
+            Karat = Karat.Replace(" ", "")
         End If
 
         Console.WriteLine(Karat)
