@@ -110,10 +110,16 @@ Public Class Karat
 
         If category.ToString.Contains("G") Then
             category = "Auction"
+        ElseIf category.ToString.Contains("NC") Then
+            category = "Auction"
+        ElseIf category.ToString.Contains("NA") Then
+            category = "Auction"
+        ElseIf category.ToString.Contains("NB") Then
+            category = "Auction"
         ElseIf category.ToString.Contains("T") Then
             category = "Titus"
         Else
-            category = "Brand New"
+        category = "Brand New"
         End If
 
         Console.WriteLine(category)
